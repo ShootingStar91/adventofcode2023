@@ -13,7 +13,7 @@ const numberWords = [
 ];
 const digits = "123456789".split("");
 
-const getFirstDigit = (row, reverse, log) => {
+const getFirstDigit = (row, reverse) => {
   let builder = "";
   const reverseStr = (str) =>
     reverse ? str.split("").reverse().join("") : str;
@@ -33,13 +33,6 @@ const getFirstDigit = (row, reverse, log) => {
       reverseStr(str).charAt(builder.length)
     );
 
-    if (log)
-      console.log(
-        `${i} Current: ${char} \tBuilder: ${builder} \tPossible: ${possibleLetters.join(
-          " "
-        )} \t${temp} `
-      );
-
     if (possibleLetters.includes(char)) {
       builder += char;
     } else {
@@ -53,13 +46,6 @@ const getFirstDigit = (row, reverse, log) => {
     if (digits.includes(char)) {
       return char;
     }
-    if (log)
-    console.log(
-      `${i} Current: ${char} \tBuilder: ${builder} \tPossible: ${possibleLetters.join(
-        " "
-      )} \t${temp} `
-    );
-    if (log) console.log()
   }
   return "empty";
 };
@@ -70,15 +56,12 @@ const getRowNumber = (row) => {
   return parseInt(`${first}${last}`, 10);
 };
 
-const compute = (data, log) => {
+const compute = (data) => {
   const rows = data.split("\n");
   let sum = 0;
   let i = 0;
   for (const row of rows) {
     const rowNums = getRowNumber(row);
-    // console.log(row)
-    // console.log(rowNums)
-    if (log) console.log(row, rowNums);
     console.log(i++, rowNums);
     sum += rowNums;
   }
@@ -110,4 +93,5 @@ const testExampleData = () => {
 };
 
 // testOne(`lhmgblplseventhreenine9vcpnpvzhjronenhczffqt`);
+// testExampleData()
 run()
