@@ -1,88 +1,113 @@
-const fs = require("fs")
+const fs = require("fs");
 
-const numberWords = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-const digits = "123456789".split("")
+const numberWords = [
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+];
+const digits = "123456789".split("");
 
 const getFirstDigit = (row, reverse, log) => {
-    let builder = ""
-    const reverseStr = str => reverse ? str.split("").reverse().join("") : str
-    let returnTo = -1
-    for (let i = reverse ? row.length - 1 : 0; reverse ? i >= 0 : i < row.length; reverse ? i-- : i++) {
-        let char = row[i]
-        
-        let temp = numberWords
-            .filter(nw => 
-                nw.length > builder.length && reverseStr(nw).startsWith(builder))
+  let builder = "";
+  const reverseStr = (str) =>
+    reverse ? str.split("").reverse().join("") : str;
 
-        let possibleLetters = temp
-                    .map(str => reverseStr(str).charAt(builder.length))
+  for (
+    let i = reverse ? row.length - 1 : 0;
+    reverse ? i >= 0 : i < row.length;
+    reverse ? i-- : i++
+  ) {
+    let char = row[i];
 
-        if (log) console.log(`Current: ${char} \tBuilder: ${builder} \tPossible: ${possibleLetters.join(" ")} \t${temp} `)
-        
-        if (possibleLetters.includes(char)) {
-            builder += char
-        } else {
-            builder = char
-            let oldi = i
-            if (returnTo >= 0) i = returnTo
-            returnTo = oldi + (reverse ? -1 : 1)
-        }
+    let temp = numberWords.filter(
+      (nw) => nw.length > builder.length && reverseStr(nw).startsWith(builder)
+    );
 
-        if (numberWords.includes(reverseStr(builder))) return `${numberWords.indexOf(reverseStr(builder)) + 1}`
-        
-        if (digits.includes(char)) {
-            return char
-        }
+    let possibleLetters = temp.map((str) =>
+      reverseStr(str).charAt(builder.length)
+    );
+
+    if (log)
+      console.log(
+        `${i} Current: ${char} \tBuilder: ${builder} \tPossible: ${possibleLetters.join(
+          " "
+        )} \t${temp} `
+      );
+
+    if (possibleLetters.includes(char)) {
+      builder += char;
+    } else {
+      if (builder.length > 1) i += (reverse ? 1 : -1) * (builder.length - 1)
+      builder = row[i]
     }
-    return "empty"
-}
 
-const getRowNumber = row => {    
-    const first = getFirstDigit(row, false)
-    const last = getFirstDigit(row, true)
-    return parseInt(`${first}${last}`, 10)
-}
+    if (numberWords.includes(reverseStr(builder)))
+      return `${numberWords.indexOf(reverseStr(builder)) + 1}`;
 
-const compute = (data, log) => {    
-    const rows = data.split("\n")
-    let sum = 0
-    let i = 0
-    for (const row of rows) {
-        const rowNums = getRowNumber(row)
-        // console.log(row)
-        // console.log(rowNums)
-        if (log) console.log(row, rowNums)
-        console.log(i++, rowNums)
-        sum += rowNums
+    if (digits.includes(char)) {
+      return char;
     }
-    console.log(sum)
-}
+    if (log)
+    console.log(
+      `${i} Current: ${char} \tBuilder: ${builder} \tPossible: ${possibleLetters.join(
+        " "
+      )} \t${temp} `
+    );
+    if (log) console.log()
+  }
+  return "empty";
+};
 
+const getRowNumber = (row) => {
+  const first = getFirstDigit(row, false);
+  const last = getFirstDigit(row, true);
+  return parseInt(`${first}${last}`, 10);
+};
+
+const compute = (data, log) => {
+  const rows = data.split("\n");
+  let sum = 0;
+  let i = 0;
+  for (const row of rows) {
+    const rowNums = getRowNumber(row);
+    // console.log(row)
+    // console.log(rowNums)
+    if (log) console.log(row, rowNums);
+    console.log(i++, rowNums);
+    sum += rowNums;
+  }
+  console.log(sum);
+};
 
 const run = () => {
-    fs.readFile("../inputs/day1", 'utf8', (err, data) => {
-        compute(data, false)
-    })
-}
+  fs.readFile("../inputs/day1", "utf8", (err, data) => {
+    compute(data, false);
+  });
+};
+
 const exampleData = `two1nine
 eightwothree
 abcone2threexyz
 xtwone3four
 4nineeightseven2
 zoneight234
-7pqrstsixteen`
+7pqrstsixteen`;
 
 const testOne = (str) => {
-    console.log(getFirstDigit(str, false, true))
-    console.log(getFirstDigit(str, true, true))
-    console.log(str)
-}
+  console.log(getFirstDigit(str, false, true));
+  console.log(getFirstDigit(str, true, true));
+  console.log(str);
+};
 
 const testExampleData = () => {
-    compute(exampleData)
-}
+  compute(exampleData);
+};
 
-testOne(`lhmgblplseventhreenine9vcpnpvzhjronenhczffqt`)
-
-
-
+// testOne(`lhmgblplseventhreenine9vcpnpvzhjronenhczffqt`);
+run()
